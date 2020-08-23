@@ -1,4 +1,6 @@
 require_relative './game.rb'
+require 'nokogiri'
+require 'open-uri'
 
 ## ハードウェア別のゲーム一覧ページ
 
@@ -24,7 +26,7 @@ class Page
   # @return [Array(Hash<Symbol, String>)]
   def game_links
     table_rows_with_head.filter(&:include_link?).map do |row|
-      { title: row.title, url: 'https://' + row.url }
+      { title: row.title, url: row.url }
     end
   end
 
@@ -76,7 +78,7 @@ class Page
 
     # @return [String] 個別のページへのURL
     def url
-      raw_url.gsub(/\/\//, "")
+      'https:' + raw_url
     end
 
     # private
