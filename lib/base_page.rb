@@ -6,15 +6,18 @@ class BasePage
   # @param [Int] スクレイピング対象のページのid
   # @return [Page]
   def initialize(id)
-    binding.pry
-    @tmpfile = URI.open(page_template(id))
+    @url = page_template(id)
+  end
+
+  def url
+    @url
   end
 
   # private
 
   # @return [Document] Nokogiriがパースしたドキュメント
   def doc
-    @doc ||= Nokogiri::HTML.parse(@tmpfile)
+    @doc ||= Nokogiri::HTML.parse(URI.open(url))
   end
 
   # @param [Int] ページのid

@@ -1,7 +1,6 @@
+# frozen_string_literal
 require_relative './game.rb'
 require_relative './base_page.rb'
-require 'nokogiri'
-require 'open-uri'
 
 ID_TABLE = {
   fc: '13', sfc: '14', n64: '15', gc: '16', wii: '17', wiiu: '3942', switch: '6695',
@@ -13,10 +12,9 @@ ID_TABLE = {
 # ハードウェア別のゲーム一覧ページ
 class Hardware < BasePage
 
-   # @return [Symbol]
-   # @return [Hardware]
+  # @return [Symbol]
+  # @return [Hardware]
   def initialize(hardware_key)
-
     super(ID_TABLE[hardware_key])
   end
 
@@ -25,16 +23,17 @@ class Hardware < BasePage
   #  マシンスペック次第でメモリが足りなくなるかも？
   # @return [Array(Game)]
   def games
-    game_links.map do |item|
-      Game.new(item[:url])
+    @games ||= game_links.map do |game|
+      Game.new(game[:id])
     end
   end
 
   # ゲームのタイトルと個別のページへのリンク
   # @return [Array(Hash<Symbol, String>)]
   def game_links
-    table_rows_with_head.filter(&:include_link?).map do |row|
-      { title: row.title, url: row.url }
+    @game_links ||= table_rows_with_head.filter(&:include_link?).map do |row|
+      puts "#{row.page_id}:#{row.title}"
+      { title: row.title, id: row.page_id }
     end
   end
 
@@ -61,7 +60,7 @@ class Hardware < BasePage
   # @return [Array(TableRow)]
   def table_rows_with_head
     table_row_elements.map do |element|
-      Page::TableRow.new(element)
+      Hardware::TableRow.new(element)
     end
   end
 
@@ -79,9 +78,12 @@ class Hardware < BasePage
       title_node.children.first.content
     end
 
-    # @return [String] 個別のページへのURL
-    def url
-      'https:' + raw_url
+
+    # @return [String] 個別のページのID
+    def page_id
+      # xxx.htmlにヒットする正規表現
+      # [1]でアクセスしてidだけ取り出している
+      Regexp.new('(\d.+)(\.[^.]+$)').match(raw_url)[1]
     end
 
     # private
@@ -124,7 +126,7 @@ class Hardware < BasePage
     end
 
     # @return [String] バックスラッシュ付きのURL
-      # e.g. "//w.atwiki.jp/gcmatome/pages/xxx.html"
+    # e.g. "//w.atwiki.jp/gcmatome/pages/xxx.html"
     def raw_url
       title_node.attributes['href'].value
     end
