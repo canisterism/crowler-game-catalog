@@ -1,15 +1,23 @@
 require_relative './game.rb'
+require_relative './base_page.rb'
 require 'nokogiri'
 require 'open-uri'
 
-## ハードウェア別のゲーム一覧ページ
+ID_TABLE = {
+  fc: '13', sfc: '14', n64: '15', gc: '16', wii: '17', wiiu: '3942', switch: '6695',
+  ps: '22', ps2: '23', ps3: '24', ps4: '5139', xbox: '25', xbox360: '26', xboxone: '5506',
+  md: '19', ss: '20', dc: '21', pce: '30', ng: '99', atari: '27', sms: '18', cv: '28',
+  scv: '29', threedo: '98', playdia: '7060', pcfx: '91', vb: '570', oq: '7552'
+}
 
-class Page
+# ハードウェア別のゲーム一覧ページ
+class Hardware < BasePage
 
-  # @param [String] スクレイピング対象のURL
-  # @return [Page]
-  def initialize(url)
-    @tmpfile ||= URI.open(url)
+   # @return [Symbol]
+   # @return [Hardware]
+  def initialize(hardware_key)
+
+    super(ID_TABLE[hardware_key])
   end
 
   # TODO(canisterism):
@@ -30,13 +38,8 @@ class Page
     end
   end
 
+
   # private
-
-  # @return [Document] Nokogiriがパースしたドキュメント
-  def doc
-    @doc ||= Nokogiri::HTML.parse(@tmpfile)
-  end
-
 
   # ページ内の<tbody>の配列。
   # 各<tbody>は年別のゲームのリストになっている。

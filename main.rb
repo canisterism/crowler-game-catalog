@@ -1,8 +1,7 @@
-require_relative 'lib/page.rb'
+require_relative 'lib/hardware.rb'
 require "pry"
 
-urls = {switch: 'https://w.atwiki.jp/gcmatome/pages/6695.html'}
-page = Page.new(urls[:switch])
+hardware = Hardware.new(:ps2)
 
 binding.pry
-page
+hardware
