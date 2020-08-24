@@ -12,7 +12,7 @@ ID_TABLE = {
 # ハードウェア別のゲーム一覧ページ
 class Hardware < BasePage
 
-  # @return [Symbol]
+  # @param [Symbol]
   # @return [Hardware]
   def initialize(hardware_key)
     super(ID_TABLE[hardware_key])
@@ -24,7 +24,7 @@ class Hardware < BasePage
   # @return [Array(Game)]
   def games
     @games ||= game_links.map do |game|
-      Game.new(game[:id])
+      Game.new(title: game[:title], id: game[:id])
     end
   end
 
