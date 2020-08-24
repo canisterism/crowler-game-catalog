@@ -2,6 +2,6 @@
 
 require_relative './base_page.rb'
 
-class Game < BasePageq
+class Game < BasePage
 
 end
