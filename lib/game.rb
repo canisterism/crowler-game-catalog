@@ -1,6 +1,8 @@
 # frozen_string_literal
 
+require 'logger'
 require_relative './base_page.rb'
+log = Logger.new('/tmp/log')
 
 class Game < BasePage
 
@@ -59,22 +61,28 @@ class Game < BasePage
 
     # @return [String] テーブル内で先頭に表示されている画像のURL。だいたいamazonのはず。
     def image_url
-      image_tag.attr('data-original')
+      @image_url = image_tag.attr('data-original')
     end
 
     # @return [Date]
     def published_at
-      Date.today
+
+      raw_text = published_at_row.elements.at('td:contains(発売日)').next_element.text
+      # yyyy年mm月dd日のフォーマット
+      date_array = Regexp.new('(\d{4})年(\d{1,2})月(\d{1,2})日').match(raw_text).captures.map(&:to_i)
+      @published_at = Date.new(date_array[0], date_array[1], date_array[2])
+    rescue => e
+      log.warn("published_at: e#{e}")
     end
 
     # @return [String]
     def published_from
-      'スクウェア・エニックス'
+      @published_from = 'スクウェア・エニックス'
     end
 
     # @return [Array(String?)]
     def hardwares
-      ['switch']
+      @hardwares = ['switch']
     end
 
     # private
@@ -109,6 +117,10 @@ class Game < BasePage
       find_row_contains(keyword: '発売日')
     end
 
+     # @return [Nokogiri::XML::Element] <tr>を返す
+    def price_row
+      find_row_contains(keyword: '定価')
+    end
 
     # rowsの中からキーワードを持つrow(tr)を返す
     # @params [String]
