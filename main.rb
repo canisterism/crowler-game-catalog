@@ -1,6 +1,6 @@
 require_relative 'lib/hardware.rb'
 require "pry"
 
-b = Hardware.new(:switch).games[1]
+games = Hardware.new(:switch).games
 binding.pry
-b
+games

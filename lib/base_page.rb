@@ -6,11 +6,11 @@ class BasePage
   # @param [Int] スクレイピング対象のページのid
   # @return [Page]
   def initialize(id)
-    @url = page_template(id)
+    @id = id
   end
 
   def url
-    @url
+    "https://w.atwiki.jp/gcmatome/pages/#{@id}.html"
   end
 
   # private
@@ -20,9 +20,4 @@ class BasePage
     @doc ||= Nokogiri::HTML.parse(URI.open(url))
   end
 
-  # @param [Int] ページのid
-  # @return [String] URL
-  def page_template(id)
-    "https://w.atwiki.jp/gcmatome/pages/#{id}.html"
-  end
 end

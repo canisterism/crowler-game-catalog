@@ -14,8 +14,9 @@ class Hardware < BasePage
 
   # @param [Symbol]
   # @return [Hardware]
-  def initialize(hardware_key)
-    super(ID_TABLE[hardware_key])
+  def initialize(name_key)
+    @name = name_key.to_s
+    super(ID_TABLE[name_key])
   end
 
   # TODO(canisterism):
@@ -24,7 +25,7 @@ class Hardware < BasePage
   # @return [Array(Game)]
   def games
     @games ||= game_links.map do |game|
-      Game.new(title: game[:title], id: game[:id])
+      Game.new(title: game[:title], id: game[:id], hardware: @name)
     end
   end
 
