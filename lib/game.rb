@@ -28,8 +28,8 @@ class Game < BasePage
   end
 
   # @return [String]
-  def published_from
-    @published_from ||= basic_info.published_from
+  def publisher
+    @publisher ||= basic_info.publisher
   end
 
   # @return [Array(String?)]
@@ -84,10 +84,10 @@ class Game < BasePage
     end
 
     # @return [String]
-    def published_from
-      @published_from = published_from_row.elements[1].text.delete("\n")
+    def publisher
+      @publisher = publisher_row.elements[1].text.delete("\n")
     rescue => e
-      log.warn("published_from: #{e}")
+      log.warn("publisher: #{e}")
     end
 
     # private
@@ -108,7 +108,7 @@ class Game < BasePage
     end
 
      # @return [Nokogiri::XML::Element] <tr>を返す
-    def published_from_row
+    def publisher_row
       # NOTICE: 「発売日」よりも「発売」が先に来ることを前提に書いている
       # 「発売」「発売・開発元」「発売元」のパターンが存在するため
       find_row_contains(keyword: '発売')
